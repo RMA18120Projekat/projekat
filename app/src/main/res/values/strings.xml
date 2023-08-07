@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">My Places</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="opis">My Places je aplikacija koja omogucava korisnicima da pronalaze kosarkaske i fudbalske terene u njihovoj okolini kao i njihovo ocenjivanje i komentarisanje koje je javno pritom sakupljajuci poene</string>
+    <string name="naslov">Dobro dosli u aplikaciju My Places</string>
+    <string name="kreni">Kreni</string>
+</resources>
