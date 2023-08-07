@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -23,6 +24,8 @@ class LoginFragment : Fragment() {
     lateinit var pass:EditText
      lateinit var auth:FirebaseAuth
 lateinit var progrss:ProgressBar
+    private  val sharedViewModel:Korisnicko by activityViewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +48,7 @@ lateinit var progrss:ProgressBar
                         if(it.isSuccessful)
                         {
                             progrss.visibility=View.GONE
+                            sharedViewModel.ime=mejl
                             findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
 
                         }

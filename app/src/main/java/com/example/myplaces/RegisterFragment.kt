@@ -17,6 +17,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.myplaces.databinding.FragmentRegisterBinding
 import com.google.android.gms.tasks.OnCompleteListener
@@ -46,7 +47,7 @@ lateinit var storage:FirebaseStorage
 lateinit var selectedImg:Uri
 private val REQUEST_IMAGE_CAPTURE = 1
 private lateinit var storageRef: StorageReference
-
+private  val sharedViewModel:Korisnicko by activityViewModels()
 
     private lateinit var openCameraButton: Button
 private lateinit var imageView: ImageView
@@ -92,6 +93,7 @@ private lateinit var imageView: ImageView
                        val user=User(korisnicko,sifra,name,surname,numberPhone.toLongOrNull())
                        val key = korisnicko.replace(".", "").replace("#", "").replace("$", "").replace("[", "").replace("]", "")
                        database.child(key).setValue(user).addOnSuccessListener {
+                           sharedViewModel.ime=korisnicko
                            korisnickoIme.text.clear()
                            prezime.text.clear()
                            pass.text.clear()

@@ -11,25 +11,30 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.ktx.Firebase
 
 
 class HomeFragment : Fragment() {
     lateinit var auth: FirebaseAuth
-    lateinit var text:TextView
-    lateinit var button: Button
+    lateinit var textIme:TextView
+    lateinit var database:DatabaseReference
+    val sharedViewModel:Korisnicko by activityViewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view=inflater.inflate(R.layout.fragment_home,container,false)
-
+        textIme=view.findViewById(R.id.textViewKorisnikHome)
+        textIme.text=sharedViewModel.ime.toString()
         return view
     }
 

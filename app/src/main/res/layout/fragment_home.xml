@@ -5,25 +5,66 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:gravity="center"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context=".HomeFragment">
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/textViewDobroDosaoHome"
+        style="@style/Naslov"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
+        android:layout_height="71dp"
         android:gravity="center"
         android:text="Dobro dosao"
-        android:textSize="48sp"
-        android:textStyle="bold" />
+        android:textAlignment="center"
+        android:textSize="34sp" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/textViewKorisnikHome"
+        style="@style/Naslov"
+        android:layout_width="match_parent"
+        android:layout_height="71dp"
+        android:gravity="center"
+
+        android:textAlignment="center"
+        android:textSize="34sp" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="45dp">
 
-        android:gravity="center"
-        android:textSize="48sp"
-        android:textStyle="bold" />
+        <Button
+            android:id="@+id/buttonTrenutnaLokacija"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Trenutna lokacija" />
+
+        <Button
+            android:id="@+id/buttonDodajObjekat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Dodaj Obejakat" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/buttonPretraziObjekat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Pretrazi objekat" />
+
+        <Button
+            android:id="@+id/buttonVidiListuKorisnika"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Vidi listu korisnika" />
+    </LinearLayout>
+
+
 </LinearLayout>
