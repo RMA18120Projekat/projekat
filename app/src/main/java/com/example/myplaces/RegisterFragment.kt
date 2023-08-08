@@ -1,9 +1,7 @@
 package com.example.myplaces
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -19,14 +17,9 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.myplaces.databinding.FragmentRegisterBinding
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.ByteArrayOutputStream
@@ -47,6 +40,7 @@ lateinit var storage:FirebaseStorage
 lateinit var selectedImg:Uri
 private val REQUEST_IMAGE_CAPTURE = 1
 private lateinit var storageRef: StorageReference
+lateinit var user:User
 private  val sharedViewModel:Korisnicko by activityViewModels()
 
     private lateinit var openCameraButton: Button
@@ -58,7 +52,7 @@ private lateinit var imageView: ImageView
     ): View? {
         val view=inflater.inflate(R.layout.fragment_register,container,false)
         pass=view.findViewById(R.id.editTextNovaSifra)
-         korisnickoIme=view.findViewById(R.id.editTextKorIme)
+         korisnickoIme=view.findViewById(R.id.editTextMejl)
          ime=view.findViewById(R.id.editTextIme)
          prezime=view.findViewById(R.id.editTextPrezime)
          brojTelefona=view.findViewById(R.id.editTextBrojTelefona)
@@ -90,7 +84,7 @@ private lateinit var imageView: ImageView
                    {
                        progress.visibility=View.GONE
                        database=FirebaseDatabase.getInstance().getReference("Users")
-                       val user=User(korisnicko,sifra,name,surname,numberPhone.toLongOrNull())
+                       user=User(korisnicko,sifra,name,surname,numberPhone.toLongOrNull())
                        val key = korisnicko.replace(".", "").replace("#", "").replace("$", "").replace("[", "").replace("]", "")
                        database.child(key).setValue(user).addOnSuccessListener {
                            sharedViewModel.ime=korisnicko
@@ -150,6 +144,7 @@ private lateinit var imageView: ImageView
                     imagesRef.downloadUrl.addOnSuccessListener { uri ->
                         // Save the URI to the database or use it as needed
                         val imageUrl = uri.toString()
+                      sharedViewModel.img=imageUrl
                         // Add the code to save the URL to the user's data in Firebase Database here
                     }.addOnFailureListener { exception ->
                         // Handle any errors that may occur while retrieving the download URL
