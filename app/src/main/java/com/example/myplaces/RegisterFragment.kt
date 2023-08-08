@@ -35,9 +35,9 @@ lateinit var progress:ProgressBar
 lateinit var dugme:Button
 lateinit var database:DatabaseReference
 lateinit var auth: FirebaseAuth
-lateinit var baza:FirebaseDatabase
+/*lateinit var baza:FirebaseDatabase
 lateinit var storage:FirebaseStorage
-lateinit var selectedImg:Uri
+lateinit var selectedImg:Uri*/
 private val REQUEST_IMAGE_CAPTURE = 1
 private lateinit var storageRef: StorageReference
 lateinit var user:User

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:textAlignment="center"
+    tools:context=".DodajMestoFragment">
+
+
+    <EditText
+        android:id="@+id/editTextNazivMesta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Naziv mesta"
+        android:inputType="text"
+        android:textAlignment="center" />
+
+    <EditText
+        android:id="@+id/editTextKomentar"
+        android:layout_width="match_parent"
+        android:layout_height="390dp"
+        android:ems="10"
+        android:hint="Dodaj komentar o kvalitetetu podloge golova,koseva i opsti komentar o mestu"
+        android:inputType="text"
+        android:textAlignment="textStart" />
+
+    <EditText
+        android:id="@+id/editTextOcena"
+        android:layout_width="match_parent"
+        android:layout_height="71dp"
+        android:ems="10"
+        android:hint="Dodajte ocenu"
+        android:inputType="number" />
+<ProgressBar
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/progressMesta"
+    android:visibility="gone"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonDodajMesto"
+            android:layout_width="155dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="Dodaj mesto" />
+
+        <Button
+            android:id="@+id/buttonOtkaziDodavanje"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="1"
+            android:text="Otkazi" />
+    </LinearLayout>
+</LinearLayout>
