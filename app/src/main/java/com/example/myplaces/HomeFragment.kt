@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
@@ -34,6 +35,7 @@ class HomeFragment : Fragment() {
     lateinit var database:DatabaseReference
     val sharedViewModel:Korisnicko by activityViewModels()
     val storage = FirebaseStorage.getInstance()
+    lateinit var ucitaj:ProgressBar
     val storageRef = storage.reference
     //val imageRef=storageRef.child(sharedViewModel.img)
     lateinit var mojaMesta:Button
@@ -45,13 +47,16 @@ class HomeFragment : Fragment() {
         val view=inflater.inflate(R.layout.fragment_home,container,false)
         textIme=view.findViewById(R.id.textViewKorisnikHome)
         auth=FirebaseAuth.getInstance()
+        ucitaj=view.findViewById(R.id.ucitajImeSlika)
         setHasOptionsMenu(true)
         try {
+            ucitaj.visibility=View.VISIBLE
             database = FirebaseDatabase.getInstance().getReference("Users")
             val key = sharedViewModel.ime.replace(".", "").replace("#", "").replace("$", "").replace("[", "").replace("]", "")
             database.child(key).get().addOnSuccessListener { snapshot ->
                 if (snapshot.exists()) {
                     textIme.text = snapshot.child("ime").value.toString()
+                    ucitaj.visibility=View.GONE
                 }
             }.addOnFailureListener { exception ->
                 // Handle the exception here

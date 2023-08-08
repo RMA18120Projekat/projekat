@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:textAlignment="center"
+    tools:context=".DodajMestoFragment">
+
+
+    <TextView
+        android:id="@+id/editTextNazivMestaU"
+        android:layout_width="match_parent"
+        android:layout_height="41dp"
+        android:ems="10"
+        android:hint="Naziv mesta"
+        android:inputType="text"
+        android:textAlignment="center"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/editTextKomentarU"
+        android:layout_width="match_parent"
+        android:layout_height="390dp"
+        android:ems="10"
+        android:hint="Dodaj komentar o kvalitetetu podloge golova,koseva i opsti komentar o mestu"
+        android:inputType="text"
+        android:textAlignment="textStart" />
+
+    <EditText
+        android:id="@+id/editTextOcenaU"
+        android:layout_width="match_parent"
+        android:layout_height="71dp"
+        android:ems="10"
+        android:hint="Dodajte ocenu"
+        android:inputType="number" />
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressMestaU"
+        android:visibility="gone"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonDodajMestoU"
+            android:layout_width="155dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="16dp"
+            android:text="Azuriraj mesto" />
+
+        <Button
+            android:id="@+id/buttonOtkaziDodavanjeU"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="1"
+            android:text="Obrisi mesto" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonNazadU"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Otkazi" />
+</LinearLayout>

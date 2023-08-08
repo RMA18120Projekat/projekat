@@ -17,6 +17,11 @@
         android:text="Dobro dosao"
         android:textAlignment="center"
         android:textSize="34sp" />
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ucitajImeSlika"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/textViewKorisnikHome"

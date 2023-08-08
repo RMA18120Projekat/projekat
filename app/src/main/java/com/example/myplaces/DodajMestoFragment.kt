@@ -41,22 +41,33 @@ lateinit var mesto:Places
         potvrdi=view.findViewById(R.id.buttonDodajMesto)
         otkazi=view.findViewById(R.id.buttonOtkaziDodavanje)
         potvrdi.setOnClickListener {
+            val nazivPom=nazivMesta.text.toString()
+            val opisPom=opisMesta.text.toString()
+            val ocenaPom=ocenaMesta.text.toString()
+            if(nazivPom.isNotEmpty()&&opisPom.isNotEmpty()&&ocenaPom.isNotEmpty())
+            {
+                progress.visibility = View.VISIBLE
+                database=FirebaseDatabase.getInstance().getReference("Places")
+                mesto=Places(nazivMesta.text.toString(),opisMesta.text.toString(),ocenaMesta.text.toString().toIntOrNull(),sharedViewModel.ime)
+                val key = nazivMesta.text.toString().replace(".", "").replace("#", "").replace("$", "").replace("[", "").replace("]", "")
+                database.child(key).setValue(mesto).addOnSuccessListener {4
+                    progress.visibility=View.GONE
+                    Toast.makeText(context, "Uspesno ste dodali mesto ${mesto.naziv}", Toast.LENGTH_SHORT).show()
+                    nazivMesta.text.clear()
+                    opisMesta.text.clear()
+                    ocenaMesta.text.clear()
 
-            progress.visibility = View.VISIBLE
-            database=FirebaseDatabase.getInstance().getReference("Places")
-            mesto=Places(nazivMesta.text.toString(),opisMesta.text.toString(),ocenaMesta.text.toString().toIntOrNull(),sharedViewModel.ime)
-            val key = nazivMesta.text.toString().replace(".", "").replace("#", "").replace("$", "").replace("[", "").replace("]", "")
-            database.child(key).setValue(mesto).addOnSuccessListener {4
-                progress.visibility=View.GONE
-                Toast.makeText(context, "Uspesno ste dodali mesto ${mesto.naziv}", Toast.LENGTH_SHORT).show()
-                nazivMesta.text.clear()
-                opisMesta.text.clear()
-                ocenaMesta.text.clear()
 
+                }.addOnFailureListener{
+                    Toast.makeText(context,"Greska",Toast.LENGTH_SHORT)
+                }
 
-            }.addOnFailureListener{
-                Toast.makeText(context,"Greska",Toast.LENGTH_SHORT)
             }
+            else
+            {
+                Toast.makeText(context,"Niste popunili sva polja",Toast.LENGTH_SHORT)
+            }
+
         }
         otkazi.setOnClickListener{
                 findNavController().navigate(R.id.action_dodajMestoFragment_to_homeFragment)

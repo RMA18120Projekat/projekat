@@ -89,6 +89,9 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_mojaMestaFragment_to_detaljniFragment2"
+            app:destination="@id/detaljniFragment2" />
     </fragment>
     <fragment
         android:id="@+id/dodajMestoFragment"
@@ -99,6 +102,17 @@
             android:id="@+id/action_dodajMestoFragment_to_homeFragment"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/detaljniFragment2"
+        android:name="com.example.myplaces.DetaljniFragment"
+        android:label="fragment_detaljni"
+        tools:layout="@layout/fragment_detaljni" >
+        <action
+            android:id="@+id/action_detaljniFragment2_to_mojaMestaFragment"
+            app:destination="@id/mojaMestaFragment"
+            app:popUpTo="@id/mojaMestaFragment"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>
