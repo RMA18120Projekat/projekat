@@ -109,6 +109,9 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_dodajMestoFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
     </fragment>
     <fragment
         android:id="@+id/detaljniFragment2"
@@ -135,6 +138,11 @@
             android:id="@+id/action_mapFragment_to_mojaMestaFragment"
             app:destination="@id/mojaMestaFragment"
             app:popUpTo="@id/mojaMestaFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_mapFragment_to_dodajMestoFragment"
+            app:destination="@id/dodajMestoFragment"
+            app:popUpTo="@id/dodajMestoFragment"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>

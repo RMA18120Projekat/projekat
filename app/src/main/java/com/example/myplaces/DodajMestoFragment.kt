@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -31,6 +32,8 @@ lateinit var otkazi:Button
 lateinit var mesto:Places
 lateinit var latituda:EditText
 lateinit var longituda:EditText
+lateinit var set:Button
+private val locationViewModel:LocationViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,6 +47,20 @@ lateinit var longituda:EditText
         otkazi=view.findViewById(R.id.buttonOtkaziDodavanje)
         latituda=view.findViewById(R.id.editLatituda)
         longituda=view.findViewById(R.id.editLongituda)
+        val lonObserver= Observer<String>{newValue->
+            longituda.setText(newValue.toString())
+
+        }
+        locationViewModel.longitude.observe(viewLifecycleOwner,lonObserver)
+        val latiObserver= Observer<String>{newValue->
+            latituda.setText(newValue.toString())
+
+        }
+        locationViewModel.latitude.observe(viewLifecycleOwner,latiObserver)
+        set=view.findViewById(R.id.buttonSet)
+        set.setOnClickListener{
+            findNavController().navigate(R.id.action_dodajMestoFragment_to_mapFragment)
+        }
         potvrdi.setOnClickListener {
             val nazivPom=nazivMesta.text.toString()
             val opisPom=opisMesta.text.toString()
@@ -60,6 +77,8 @@ lateinit var longituda:EditText
                     nazivMesta.text.clear()
                     opisMesta.text.clear()
                     ocenaMesta.text.clear()
+                    longituda.text.clear()
+                    latituda.text.clear()
 
 
                 }.addOnFailureListener{

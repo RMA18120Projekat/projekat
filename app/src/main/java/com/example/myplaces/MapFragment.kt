@@ -9,15 +9,20 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import org.osmdroid.config.Configuration
+import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 class MapFragment : Fragment() {
     private lateinit var map: MapView
+    private val locationViewModel:LocationViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +40,7 @@ class MapFragment : Fragment() {
         map.setMultiTouchControls(true)
         setupLocation()
         map.controller.setZoom(15.0)
+
         //val startPoint = GeoPoint(43.3209, 21.8958)
         //map.controller.setCenter(startPoint)
     }
@@ -48,6 +54,7 @@ class MapFragment : Fragment() {
             ) { isGranted: Boolean ->
                 if (isGranted) {
                     setMyLocationOverlay()
+                    setOnMapClickOverlay()
                 }
             }
 
@@ -55,6 +62,7 @@ class MapFragment : Fragment() {
             requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
         } else {
             setMyLocationOverlay()
+            setOnMapClickOverlay()
         }
     }
 
@@ -62,6 +70,24 @@ class MapFragment : Fragment() {
         val myLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(requireContext()), map)
         myLocationOverlay.enableMyLocation()
         map.overlays.add(myLocationOverlay)
+    }
+    private fun setOnMapClickOverlay()
+    {
+       var recive=object:MapEventsReceiver{
+           override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
+               var lon= p?.longitude.toString()
+               var lati= p?.latitude.toString()
+               locationViewModel.setLocation(lon,lati)
+               findNavController().popBackStack()
+               return true
+           }
+
+           override fun longPressHelper(p: GeoPoint?): Boolean {
+               return false
+           }
+       }
+        var overlayEvents=MapEventsOverlay(recive)
+        map.overlays.add(overlayEvents)
     }
 
     override fun onResume() {
