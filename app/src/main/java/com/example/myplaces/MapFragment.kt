@@ -41,8 +41,9 @@ class MapFragment : Fragment() {
         setupLocation()
         map.controller.setZoom(15.0)
 
-        //val startPoint = GeoPoint(43.3209, 21.8958)
-        //map.controller.setCenter(startPoint)
+        val startPoint = GeoPoint(43.3209, 21.8958)
+        map.controller.setCenter(startPoint)
+
     }
 
     private fun setupLocation() {

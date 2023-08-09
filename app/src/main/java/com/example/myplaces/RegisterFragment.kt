@@ -35,6 +35,7 @@ lateinit var progress:ProgressBar
 lateinit var dugme:Button
 lateinit var database:DatabaseReference
 lateinit var auth: FirebaseAuth
+lateinit var imgUrl:String
 /*lateinit var baza:FirebaseDatabase
 lateinit var storage:FirebaseStorage
 lateinit var selectedImg:Uri*/
@@ -84,7 +85,7 @@ private lateinit var imageView: ImageView
                    {
                        progress.visibility=View.GONE
                        database=FirebaseDatabase.getInstance().getReference("Users")
-                       user=User(korisnicko,sifra,name,surname,numberPhone.toLongOrNull())
+                       user=User(korisnicko,sifra,name,surname,numberPhone.toLongOrNull(),sharedViewModel.img)
                        val key = korisnicko.replace(".", "").replace("#", "").replace("$", "").replace("[", "").replace("]", "")
                        database.child(key).setValue(user).addOnSuccessListener {
                            sharedViewModel.ime=korisnicko
@@ -143,8 +144,8 @@ private lateinit var imageView: ImageView
                     // Now you can get the download URL of the image and save it to the database
                     imagesRef.downloadUrl.addOnSuccessListener { uri ->
                         // Save the URI to the database or use it as needed
-                        val imageUrl = uri.toString()
-                      sharedViewModel.img=imageUrl
+                         imgUrl = uri.toString()
+                      sharedViewModel.img=imgUrl
                         // Add the code to save the URL to the user's data in Firebase Database here
                     }.addOnFailureListener { exception ->
                         // Handle any errors that may occur while retrieving the download URL

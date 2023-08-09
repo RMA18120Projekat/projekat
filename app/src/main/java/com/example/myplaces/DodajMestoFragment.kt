@@ -49,11 +49,14 @@ private val locationViewModel:LocationViewModel by activityViewModels()
         longituda=view.findViewById(R.id.editLongituda)
         val lonObserver= Observer<String>{newValue->
             longituda.setText(newValue.toString())
+            sharedViewModel.longituda=longituda.text.toString()
+
 
         }
         locationViewModel.longitude.observe(viewLifecycleOwner,lonObserver)
         val latiObserver= Observer<String>{newValue->
             latituda.setText(newValue.toString())
+            sharedViewModel.latituda=latituda.text.toString()
 
         }
         locationViewModel.latitude.observe(viewLifecycleOwner,latiObserver)

@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 
 class HomeFragment : Fragment() {
@@ -38,9 +39,11 @@ class HomeFragment : Fragment() {
     lateinit var ucitaj:ProgressBar
     val storageRef = storage.reference
     //val imageRef=storageRef.child(sharedViewModel.img)
+    private lateinit var storageReference: StorageReference
     lateinit var mojaMesta:Button
     lateinit var dodajMesto:Button
     lateinit var mape:ImageView
+    lateinit var profilna:ImageView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,6 +52,8 @@ class HomeFragment : Fragment() {
         textIme=view.findViewById(R.id.textViewKorisnikHome)
         auth=FirebaseAuth.getInstance()
         ucitaj=view.findViewById(R.id.ucitajImeSlika)
+        profilna=view.findViewById(R.id.profilna)
+
         setHasOptionsMenu(true)
         try {
             ucitaj.visibility=View.VISIBLE
@@ -57,6 +62,20 @@ class HomeFragment : Fragment() {
             database.child(key).get().addOnSuccessListener { snapshot ->
                 if (snapshot.exists()) {
                     textIme.text = snapshot.child("ime").value.toString()
+                    val imageName=snapshot.child("img").value.toString()
+                    //textIme.text=imageName
+                    /*if (!imageName.isNullOrEmpty()) {
+                        val imageRef = storageReference.child("images/$imageName")
+                        imageRef.downloadUrl.addOnSuccessListener { uri ->
+                            // Uri slike iz Firebase Storaga
+                            val imageUrl = uri.toString()
+
+                            // Prikazivanje slike u imageView2
+                            Glide.with(requireContext())
+                                .load(imageUrl)
+                                .into(profilna)
+                        }
+                    }*/
                     ucitaj.visibility=View.GONE
                 }
             }.addOnFailureListener { exception ->
@@ -66,20 +85,12 @@ class HomeFragment : Fragment() {
         } catch (e: Exception) {
             Log.e(TAG, "Error accessing Firebase: ${e.message}")
         }
-       /* imageRef.downloadUrl.addOnSuccessListener { uri ->
-            val imageUrl = uri.toString()
 
-            // Inicijalizacija ImageView-a
-            val imageView: ImageView = view.findViewById(R.id.profilna)
 
-            // Učitavanje slike u ImageView pomoću neke biblioteke za obradu slika, npr. Glide ili Picasso
-            Glide.with(this)
-                .load(imageUrl)
-                .into(imageView)
-        }.addOnFailureListener { exception ->
-            // U slučaju greške pri dohvaćanju URL-a
-            Log.e(TAG, "Error getting image URL: ${exception.message}")
-        }*/
+
+
+
+
         mojaMesta=view.findViewById(R.id.buttonMojaMesta)
         mojaMesta.setOnClickListener{
             findNavController().navigate(R.id.action_homeFragment_to_mojaMestaFragment)

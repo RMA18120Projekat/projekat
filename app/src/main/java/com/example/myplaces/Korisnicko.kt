@@ -6,4 +6,6 @@ class Korisnicko: ViewModel() {
     var ime:String=""
     var img:String=""
     var izabranoMesto=""
+    var longituda=""
+    var latituda=""
 }
