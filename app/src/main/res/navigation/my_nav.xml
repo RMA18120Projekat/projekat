@@ -78,6 +78,9 @@
         <action
             android:id="@+id/action_homeFragment_to_dodajMestoFragment"
             app:destination="@id/dodajMestoFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
     </fragment>
     <fragment
         android:id="@+id/mojaMestaFragment"
@@ -92,6 +95,9 @@
         <action
             android:id="@+id/action_mojaMestaFragment_to_detaljniFragment2"
             app:destination="@id/detaljniFragment2" />
+        <action
+            android:id="@+id/action_mojaMestaFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
     </fragment>
     <fragment
         android:id="@+id/dodajMestoFragment"
@@ -111,6 +117,22 @@
         tools:layout="@layout/fragment_detaljni" >
         <action
             android:id="@+id/action_detaljniFragment2_to_mojaMestaFragment"
+            app:destination="@id/mojaMestaFragment"
+            app:popUpTo="@id/mojaMestaFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.myplaces.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_mapFragment_to_mojaMestaFragment"
             app:destination="@id/mojaMestaFragment"
             app:popUpTo="@id/mojaMestaFragment"
             app:popUpToInclusive="true" />

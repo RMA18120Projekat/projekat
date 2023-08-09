@@ -29,6 +29,8 @@ lateinit var progress:ProgressBar
 lateinit var potvrdi:Button
 lateinit var otkazi:Button
 lateinit var mesto:Places
+lateinit var latituda:EditText
+lateinit var longituda:EditText
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,6 +42,8 @@ lateinit var mesto:Places
         progress=view.findViewById(R.id.progressMesta)
         potvrdi=view.findViewById(R.id.buttonDodajMesto)
         otkazi=view.findViewById(R.id.buttonOtkaziDodavanje)
+        latituda=view.findViewById(R.id.editLatituda)
+        longituda=view.findViewById(R.id.editLongituda)
         potvrdi.setOnClickListener {
             val nazivPom=nazivMesta.text.toString()
             val opisPom=opisMesta.text.toString()
@@ -48,24 +52,24 @@ lateinit var mesto:Places
             {
                 progress.visibility = View.VISIBLE
                 database=FirebaseDatabase.getInstance().getReference("Places")
-                mesto=Places(nazivMesta.text.toString(),opisMesta.text.toString(),ocenaMesta.text.toString().toIntOrNull(),sharedViewModel.ime)
+                mesto=Places(nazivMesta.text.toString(),opisMesta.text.toString(),ocenaMesta.text.toString().toIntOrNull(),sharedViewModel.ime,longituda.text.toString(), latituda.text.toString())
                 val key = nazivMesta.text.toString().replace(".", "").replace("#", "").replace("$", "").replace("[", "").replace("]", "")
                 database.child(key).setValue(mesto).addOnSuccessListener {4
                     progress.visibility=View.GONE
-                    Toast.makeText(context, "Uspesno ste dodali mesto ${mesto.naziv}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Uspesno ste dodali mesto ${nazivMesta.text.toString()}", Toast.LENGTH_SHORT).show()
                     nazivMesta.text.clear()
                     opisMesta.text.clear()
                     ocenaMesta.text.clear()
 
 
                 }.addOnFailureListener{
-                    Toast.makeText(context,"Greska",Toast.LENGTH_SHORT)
+                    Toast.makeText(context,"Greska",Toast.LENGTH_SHORT).show()
                 }
 
             }
             else
             {
-                Toast.makeText(context,"Niste popunili sva polja",Toast.LENGTH_SHORT)
+                Toast.makeText(context,"Niste popunili sva polja",Toast.LENGTH_SHORT).show()
             }
 
         }

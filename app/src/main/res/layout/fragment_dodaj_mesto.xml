@@ -22,8 +22,9 @@
         android:layout_width="match_parent"
         android:layout_height="390dp"
         android:ems="10"
+        android:gravity="start"
         android:hint="Dodaj komentar o kvalitetetu podloge golova,koseva i opsti komentar o mestu"
-        android:inputType="text"
+        android:inputType="textMultiLine"
         android:textAlignment="textStart" />
 
     <EditText
@@ -38,6 +39,32 @@
     android:layout_height="wrap_content"
     android:id="@+id/progressMesta"
     android:visibility="gone"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/editLongituda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:hint="Longituda" />
+
+        <EditText
+            android:id="@+id/editLatituda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_weight="1"
+            android:hint="Latituda" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonSet"
+            android:text="Postavi"/>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,4 +85,5 @@
             android:layout_weight="1"
             android:text="Otkazi" />
     </LinearLayout>
+
 </LinearLayout>

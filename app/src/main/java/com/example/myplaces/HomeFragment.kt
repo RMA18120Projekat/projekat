@@ -40,6 +40,7 @@ class HomeFragment : Fragment() {
     //val imageRef=storageRef.child(sharedViewModel.img)
     lateinit var mojaMesta:Button
     lateinit var dodajMesto:Button
+    lateinit var mape:ImageView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -86,6 +87,10 @@ class HomeFragment : Fragment() {
         dodajMesto=view.findViewById(R.id.buttonDodajObjekat)
         dodajMesto.setOnClickListener{
             findNavController().navigate(R.id.action_homeFragment_to_dodajMestoFragment)
+        }
+        mape=view.findViewById(R.id.imageViewMape)
+        mape.setOnClickListener{
+            findNavController().navigate(R.id.action_homeFragment_to_mapFragment)
         }
         return view
     }
