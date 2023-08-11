@@ -7,12 +7,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -21,6 +24,8 @@ import com.google.firebase.database.FirebaseDatabase
 class DetaljniFragment : Fragment() {
 
     private  val sharedViewModel:Korisnicko by activityViewModels()
+    private val locationViewModel:LocationViewModel by activityViewModels()
+/////////////////////////////////////////////////////////////////////////////////
     private lateinit var database:DatabaseReference
     private lateinit var naziv:TextView
     private lateinit var opis:EditText
@@ -29,24 +34,203 @@ class DetaljniFragment : Fragment() {
     private lateinit var ucitaj:ProgressBar
     private lateinit var back:Button
     private lateinit var obrisi:Button
+    private lateinit var mapa:Button
+    private lateinit var latituda:TextView
+    private lateinit var longituda:TextView
+    //////////////////////////////////////
+    ////////////////////////////////////////
+
+    lateinit var teren: Spinner
+
+    var terenIzabran:String="Fudbalski"
+    /////////////////////////////////////////
+    lateinit var sirinaObruca: Spinner
+    lateinit var sirinaText:TextView
+    private  var sirinaIzabrana:String="Normlna sirina"
+    lateinit var osobinaObruca: Spinner
+    lateinit var osobinaText:TextView
+    var osobinaIzabrana:String="Normalan osecaj"
+    lateinit var podlogaKosarka: Spinner
+    lateinit var podlogaKText:TextView
+    var podlogaKIzabrana:String="Guma"
+    lateinit var mrezica: Spinner
+    lateinit var mrezicaText:TextView
+    var mrezicaIzabrana:String="Ima"
+    lateinit var kosevi: Spinner
+    lateinit var koseviText:TextView
+    var koseviIzabrana:String="305cm"
+    ///////////////////////////////////////
+    lateinit var posecenost: Spinner
+    var posecenostIzabrana:String="Mala"
+
+    lateinit var dimenzije: Spinner
+    var dimenzijeIzabrana:String="Male"
+    //////////////////////////////////////
+    lateinit var mreza: Spinner
+    lateinit var mrezaText:TextView
+    var mrezaIzabrana:String="Ima"
+    lateinit var golovi: Spinner
+    lateinit var goloviText:TextView
+    var goloviIzabrana:String="Manji"
+    lateinit var podlogaFudbal: Spinner
+    lateinit var podlogaFText:TextView
+    var podlogaFIzabrana:String="Trava"
+
+    /////////////////////////////////////
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view=inflater.inflate(R.layout.fragment_detaljni,container,false)
+        teren=view.findViewById(R.id.spinnerTerenU)
+        sirinaObruca=view.findViewById(R.id.spinnerSirinaU)
+        sirinaText=view.findViewById(R.id.textSirinaU)
+        osobinaObruca=view.findViewById(R.id.spinnerOsobinaU)
+        osobinaText=view.findViewById(R.id.textOsobinaU)
+        podlogaKosarka=view.findViewById(R.id.spinnerPodlogaKosarkaU)
+        podlogaKText=view.findViewById(R.id.textPodlogaKosarkaU)
+        mrezica=view.findViewById(R.id.spinnerMrezicaU)
+        mrezicaText=view.findViewById(R.id.textMrezicaU)
+        mreza=view.findViewById(R.id.spinnerMrezaU)
+        posecenost=view.findViewById(R.id.spinnerPosecenostU)
+        dimenzije=view.findViewById(R.id.spinnerDimenzijeU)
+        mrezaText=view.findViewById(R.id.textMrezaU)
+        golovi=view.findViewById(R.id.spinnerGoloviU)
+        goloviText=view.findViewById(R.id.textGoloviU)
+        podlogaFudbal=view.findViewById(R.id.spinnerPodlogaFudbalU)
+        podlogaFText=view.findViewById(R.id.textPodlogaFudbalU)
+        kosevi=view.findViewById(R.id.spinnerKoseviU)
+        koseviText=view.findViewById(R.id.textKoseviU)
+
+        /////////////////////////////////////////////////
         naziv=view.findViewById(R.id.editTextNazivMestaU)
         opis=view.findViewById(R.id.editTextKomentarU)
         ocena=view.findViewById(R.id.editTextOcenaU)
         ucitaj=view.findViewById(R.id.progressMestaU)
         azuriraj=view.findViewById(R.id.buttonDodajMestoU)
+        latituda=view.findViewById(R.id.Latituda)
+        longituda=view.findViewById(R.id.Longituda)
         try {
             ucitaj.visibility=View.VISIBLE
             database = FirebaseDatabase.getInstance().getReference("Places")
             database.child(sharedViewModel.izabranoMesto).get().addOnSuccessListener { snapshot ->
                 if (snapshot.exists()) {
                     naziv.text = snapshot.child("naziv").value.toString()
-                    opis.hint = snapshot.child("komentar").value.toString()
-                    ocena.hint=snapshot.child("ocena").value.toString()
+                    opis.setText( snapshot.child("komentar").value.toString())
+                    ocena.setText(snapshot.child("ocena").value.toString())
+                    latituda.text=snapshot.child("latituda").value.toString()
+                    longituda.text=snapshot.child("longituda").value.toString()
+                    sharedViewModel.latituda=latituda.text.toString()
+                    sharedViewModel.longituda=longituda.text.toString()
+
+                    //////////////////////////////////////////////////
+                    val terenNiz=resources.getStringArray(R.array.teren)
+                    val terenIndex = terenNiz.indexOf(snapshot.child("teren").value.toString())
+
+                    if (terenIndex != -1) {
+                        teren.setSelection(terenIndex)
+                    }
+                    val dimenzijeNiz=resources.getStringArray(R.array.dimenzije)
+                    val dimenzijeIndex = dimenzijeNiz.indexOf(snapshot.child("dimenzije").value.toString())
+
+                    if (dimenzijeIndex != -1) {
+                        dimenzije.setSelection(dimenzijeIndex)
+                    }
+                    val posecenostNiz=resources.getStringArray(R.array.posecenost)
+                    val posecenostIndex = posecenostNiz.indexOf(snapshot.child("posecenost").value.toString())
+
+                    if (posecenostIndex != -1) {
+                        posecenost.setSelection(posecenostIndex)
+                    }
+                    if(snapshot.child("teren").value.toString()=="Fudbalski")
+                    {
+                        mreza.visibility=View.VISIBLE
+                        golovi.visibility=View.VISIBLE
+                        podlogaFudbal.visibility=View.VISIBLE
+                        mrezaText.visibility=View.VISIBLE
+                        goloviText.visibility=View.VISIBLE
+                        podlogaFText.visibility=View.VISIBLE
+                        sirinaObruca.visibility=View.GONE
+                        sirinaText.visibility=View.GONE
+                        osobinaObruca.visibility=View.GONE
+                        osobinaText.visibility=View.GONE
+                        podlogaKosarka.visibility=View.GONE
+                        podlogaKText.visibility=View.GONE
+                        mrezica.visibility=View.GONE
+                        mrezicaText.visibility=View.GONE
+                        kosevi.visibility=View.GONE
+                        koseviText.visibility=View.GONE
+                        val mrezaNiz=resources.getStringArray(R.array.mreza)
+                        val mrezaIndex = mrezaNiz.indexOf(snapshot.child("mreza").value.toString())
+
+                        if (mrezaIndex != -1) {
+                            mreza.setSelection(mrezaIndex)
+                        }
+                        val goloviNiz=resources.getStringArray(R.array.golovi)
+                        val goloviIndex = goloviNiz.indexOf(snapshot.child("golovi").value.toString())
+
+                        if (goloviIndex != -1) {
+                            golovi.setSelection(goloviIndex)
+                        }
+                        val podlogaNiz=resources.getStringArray(R.array.podlogaF)
+                        val podlogaIndex = podlogaNiz.indexOf(snapshot.child("podlogaFudbal").value.toString())
+
+                        if (podlogaIndex != -1) {
+                            podlogaFudbal.setSelection(podlogaIndex)
+                        }
+
+
+                    }
+                    if(snapshot.child("teren").value.toString()=="Kosarkaski")
+                    {
+                        mreza.visibility=View.GONE
+                        golovi.visibility=View.GONE
+                        podlogaFudbal.visibility=View.GONE
+                        mrezaText.visibility=View.GONE
+                        goloviText.visibility=View.GONE
+                        podlogaFText.visibility=View.GONE
+                        sirinaObruca.visibility=View.VISIBLE
+                        sirinaText.visibility=View.VISIBLE
+                        osobinaObruca.visibility=View.VISIBLE
+                        osobinaText.visibility=View.VISIBLE
+                        podlogaKosarka.visibility=View.VISIBLE
+                        podlogaKText.visibility=View.VISIBLE
+                        mrezica.visibility=View.VISIBLE
+                        mrezicaText.visibility=View.VISIBLE
+                        kosevi.visibility=View.VISIBLE
+                        koseviText.visibility=View.VISIBLE
+                        val sirinaNiz=resources.getStringArray(R.array.sirinaObruca)
+                        val sirinaIndex = sirinaNiz.indexOf(snapshot.child("sirina").value.toString())
+
+                        if (sirinaIndex != -1) {
+                            sirinaObruca.setSelection(sirinaIndex)
+                        }
+                        val osobinaNiz=resources.getStringArray(R.array.osobinaObruca)
+                        val osobinaIndex = osobinaNiz.indexOf(snapshot.child("osobina").value.toString())
+
+                        if (osobinaIndex != -1) {
+                            osobinaObruca.setSelection(osobinaIndex)
+                        }
+                        val podlogaKNiz=resources.getStringArray(R.array.podlogaK)
+                        val podlogaKIndex = podlogaKNiz.indexOf(snapshot.child("podlogaKosarka").value.toString())
+
+                        if (podlogaKIndex != -1) {
+                            podlogaKosarka.setSelection(podlogaKIndex)
+                        }
+                        val mrezicaNiz=resources.getStringArray(R.array.mrezica)
+                        val mrezicaIndex = mrezicaNiz.indexOf(snapshot.child("mrezica").value.toString())
+
+                        if (mrezicaIndex != -1) {
+                            mrezica.setSelection(mrezicaIndex)
+                        }
+                        val koseviNiz=resources.getStringArray(R.array.Kosevi)
+                        val koseviIndex = koseviNiz.indexOf(snapshot.child("visinaKosa").value.toString())
+
+                        if (koseviIndex != -1) {
+                            kosevi.setSelection(koseviIndex)
+                        }
+
+                    }
                     ucitaj.visibility=View.GONE
                 }
             }.addOnFailureListener { exception ->
@@ -61,6 +245,229 @@ class DetaljniFragment : Fragment() {
             findNavController().navigate(R.id.action_detaljniFragment2_to_mojaMestaFragment)
 
         }
+        ////////////////////////////////////////////////////////////////////////////////////////
+        teren.onItemSelectedListener=object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemSelected(adapterView: AdapterView<*>?, view: View?, positon: Int, id: Long) {
+                terenIzabran=adapterView?.getItemAtPosition(positon).toString()
+                Toast.makeText(context,"${terenIzabran}",Toast.LENGTH_SHORT).show()
+                if(terenIzabran=="Fudbalski")
+                {
+                    mreza.visibility=View.VISIBLE
+                    golovi.visibility=View.VISIBLE
+                    podlogaFudbal.visibility=View.VISIBLE
+                    mrezaText.visibility=View.VISIBLE
+                    goloviText.visibility=View.VISIBLE
+                    podlogaFText.visibility=View.VISIBLE
+                    sirinaObruca.visibility=View.GONE
+                    sirinaText.visibility=View.GONE
+                    osobinaObruca.visibility=View.GONE
+                    osobinaText.visibility=View.GONE
+                    podlogaKosarka.visibility=View.GONE
+                    podlogaKText.visibility=View.GONE
+                    mrezica.visibility=View.GONE
+                    mrezicaText.visibility=View.GONE
+                    kosevi.visibility=View.GONE
+                    koseviText.visibility=View.GONE
+
+                }
+                if(terenIzabran=="Kosarkaski")
+                {
+                    mreza.visibility=View.GONE
+                    golovi.visibility=View.GONE
+                    podlogaFudbal.visibility=View.GONE
+                    mrezaText.visibility=View.GONE
+                    goloviText.visibility=View.GONE
+                    podlogaFText.visibility=View.GONE
+                    sirinaObruca.visibility=View.VISIBLE
+                    sirinaText.visibility=View.VISIBLE
+                    osobinaObruca.visibility=View.VISIBLE
+                    osobinaText.visibility=View.VISIBLE
+                    podlogaKosarka.visibility=View.VISIBLE
+                    podlogaKText.visibility=View.VISIBLE
+                    mrezica.visibility=View.VISIBLE
+                    mrezicaText.visibility=View.VISIBLE
+                    kosevi.visibility=View.VISIBLE
+                    koseviText.visibility=View.VISIBLE
+
+
+                }
+
+            }
+        }
+        sirinaObruca.onItemSelectedListener=object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                positon: Int,
+                id: Long
+            ) {
+                sirinaIzabrana = adapterView?.getItemAtPosition(positon).toString()
+            }
+        }
+        osobinaObruca.onItemSelectedListener=object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                positon: Int,
+                id: Long
+            ) {
+                osobinaIzabrana = adapterView?.getItemAtPosition(positon).toString()
+            }
+        }
+        podlogaKosarka.onItemSelectedListener=object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                positon: Int,
+                id: Long
+            ) {
+                podlogaKIzabrana = adapterView?.getItemAtPosition(positon).toString()
+            }
+        }
+        mrezica.onItemSelectedListener=object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                positon: Int,
+                id: Long
+            ) {
+                mrezicaIzabrana = adapterView?.getItemAtPosition(positon).toString()
+            }
+        }
+        posecenost.onItemSelectedListener=object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                positon: Int,
+                id: Long
+            ) {
+                posecenostIzabrana = adapterView?.getItemAtPosition(positon).toString()
+            }
+        }
+        dimenzije.onItemSelectedListener=object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                positon: Int,
+                id: Long
+            ) {
+                dimenzijeIzabrana = adapterView?.getItemAtPosition(positon).toString()
+            }
+        }
+        mreza.onItemSelectedListener=object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                positon: Int,
+                id: Long
+            ) {
+                mrezaIzabrana = adapterView?.getItemAtPosition(positon).toString()
+            }
+        }
+        golovi.onItemSelectedListener=object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                positon: Int,
+                id: Long
+            ) {
+                goloviIzabrana = adapterView?.getItemAtPosition(positon).toString()
+            }
+        }
+        podlogaFudbal.onItemSelectedListener=object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                positon: Int,
+                id: Long
+            ) {
+                podlogaFIzabrana = adapterView?.getItemAtPosition(positon).toString()
+            }
+        }
+        kosevi.onItemSelectedListener=object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onItemSelected(
+                adapterView: AdapterView<*>?,
+                view: View?,
+                positon: Int,
+                id: Long
+            ) {
+                koseviIzabrana = adapterView?.getItemAtPosition(positon).toString()
+            }
+        }
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////
+        val lonObserver= Observer<String>{newValue->
+            longituda.text=newValue.toString()
+            sharedViewModel.longituda=longituda.text.toString()
+
+
+        }
+        locationViewModel.longitude.observe(viewLifecycleOwner,lonObserver)
+        val latiObserver= Observer<String>{newValue->
+            latituda.text=newValue.toString()
+            sharedViewModel.latituda=latituda.text.toString()
+
+        }
+        locationViewModel.latitude.observe(viewLifecycleOwner,latiObserver)
+        var set:Button=view.findViewById(R.id.buttonSetU)
+        set.setOnClickListener{
+            locationViewModel.setLocation=true
+
+            findNavController().navigate(R.id.action_detaljniFragment2_to_mapFragment)
+        }
+        ///////////////////////////////////////////////////////////////////////////////
         azuriraj.setOnClickListener{
             val Opis=opis.text.toString()
             val Ocena=ocena.text.toString()
@@ -69,12 +476,13 @@ class DetaljniFragment : Fragment() {
                 ucitaj.visibility = View.VISIBLE
                 val key = naziv.text.toString().replace(".", "").replace("#", "").replace("$", "")
                     .replace("[", "").replace("]", "")
-                val mesto = Places(
-                    naziv.text.toString(),
-                    opis.text.toString(),
-                    ocena.text.toString().toIntOrNull(),
-                    sharedViewModel.ime
-                )
+
+                val mesto = if(terenIzabran=="Fudbalski") {
+                    Places(naziv.text.toString(),opis.text.toString(),ocena.text.toString().toIntOrNull(),sharedViewModel.ime,longituda.text.toString(), latituda.text.toString(),terenIzabran,"","","","","",posecenostIzabrana,dimenzijeIzabrana,mrezaIzabrana,goloviIzabrana,podlogaFIzabrana)
+
+                } else {
+                    Places(naziv.text.toString(),opis.text.toString(),ocena.text.toString().toIntOrNull(),sharedViewModel.ime,longituda.text.toString(), latituda.text.toString(),terenIzabran,sirinaIzabrana,osobinaIzabrana,podlogaKIzabrana,koseviIzabrana,mrezicaIzabrana,posecenostIzabrana,dimenzijeIzabrana,"","","")
+                }
                 database.child(key).setValue(mesto).addOnSuccessListener {
 
                     ucitaj.visibility = View.GONE
@@ -111,6 +519,11 @@ class DetaljniFragment : Fragment() {
             }
 
 
+
+        }
+        mapa=view.findViewById(R.id.mapa)
+        mapa.setOnClickListener{
+            findNavController().navigate(R.id.action_detaljniFragment2_to_mapFragment)
 
         }
 

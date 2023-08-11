@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class LocationViewModel: ViewModel() {
+    private var mesto:Places?=null
     private val _longitude=MutableLiveData<String>("")
     val longitude:LiveData<String>
         get()=_longitude

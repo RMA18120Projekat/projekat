@@ -35,6 +35,8 @@ class HomeFragment : Fragment() {
     lateinit var textIme:TextView
     lateinit var database:DatabaseReference
     val sharedViewModel:Korisnicko by activityViewModels()
+    val locationViewModel:LocationViewModel by activityViewModels()
+
     val storage = FirebaseStorage.getInstance()
     lateinit var ucitaj:ProgressBar
     val storageRef = storage.reference
@@ -44,6 +46,8 @@ class HomeFragment : Fragment() {
     lateinit var dodajMesto:Button
     lateinit var mape:ImageView
     lateinit var profilna:ImageView
+
+    private lateinit var prezimeBaza:TextView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,6 +57,7 @@ class HomeFragment : Fragment() {
         auth=FirebaseAuth.getInstance()
         ucitaj=view.findViewById(R.id.ucitajImeSlika)
         profilna=view.findViewById(R.id.profilna)
+        prezimeBaza=view.findViewById(R.id.textViewKorisnikPrezime)
 
         setHasOptionsMenu(true)
         try {
@@ -62,20 +67,14 @@ class HomeFragment : Fragment() {
             database.child(key).get().addOnSuccessListener { snapshot ->
                 if (snapshot.exists()) {
                     textIme.text = snapshot.child("ime").value.toString()
+                    prezimeBaza.text=snapshot.child("prezime").value.toString()
                     val imageName=snapshot.child("img").value.toString()
-                    //textIme.text=imageName
-                    /*if (!imageName.isNullOrEmpty()) {
-                        val imageRef = storageReference.child("images/$imageName")
-                        imageRef.downloadUrl.addOnSuccessListener { uri ->
-                            // Uri slike iz Firebase Storaga
-                            val imageUrl = uri.toString()
-
-                            // Prikazivanje slike u imageView2
-                            Glide.with(requireContext())
-                                .load(imageUrl)
-                                .into(profilna)
-                        }
-                    }*/
+                    if(imageName!="")
+                    {
+                        Glide.with(requireContext())
+                            .load(imageName)
+                            .into(profilna)
+                    }
                     ucitaj.visibility=View.GONE
                 }
             }.addOnFailureListener { exception ->
@@ -101,8 +100,13 @@ class HomeFragment : Fragment() {
         }
         mape=view.findViewById(R.id.imageViewMape)
         mape.setOnClickListener{
+            sharedViewModel.latituda=""
+            sharedViewModel.longituda=""
+            locationViewModel.setLocation=false
             findNavController().navigate(R.id.action_homeFragment_to_mapFragment)
+
         }
+
         return view
     }
 

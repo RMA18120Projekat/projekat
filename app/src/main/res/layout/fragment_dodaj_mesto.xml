@@ -17,20 +17,234 @@
         android:inputType="text"
         android:textAlignment="center" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Teren"
+            android:textSize="20sp" />
+
+        <Spinner
+            android:id="@+id/spinnerTeren"
+            android:layout_width="310dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:entries="@array/teren"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textSirina"
+            android:text="Srirna obruca"
+            android:textSize="20sp"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/spinnerSirina"
+            android:layout_width="196dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:entries="@array/sirinaObruca"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textOsobina"
+            android:text="Osobina obruca"
+            android:textSize="20sp"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/spinnerOsobina"
+            android:layout_width="173dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:entries="@array/osobinaObruca"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textPodlogaKosarka"
+            android:text="Podloga"
+            android:textSize="20sp"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/spinnerPodlogaKosarka"
+            android:layout_width="246dp"
+            android:layout_height="27dp"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:entries="@array/podlogaK"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textMrezica"
+            android:text="Mrezica"
+            android:textSize="20sp"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/spinnerMrezica"
+            android:layout_width="246dp"
+            android:layout_height="27dp"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:entries="@array/mrezica"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textKosevi"
+            android:text="Velicina kosa"
+            android:textSize="20sp"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/spinnerKosevi"
+            android:layout_width="306dp"
+            android:layout_height="27dp"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:entries="@array/Kosevi"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textPosecenost"
+            android:text="Posecenost"
+            android:textSize="20sp" />
+
+        <Spinner
+            android:id="@+id/spinnerPosecenost"
+            android:layout_width="257dp"
+            android:layout_height="27dp"
+            android:textAlignment="center"
+            android:entries="@array/posecenost"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textDimenzije"
+            android:text="Dimenzije"
+            android:textSize="20sp" />
+
+        <Spinner
+            android:id="@+id/spinnerDimenzije"
+            android:layout_width="272dp"
+            android:layout_height="27dp"
+            android:textAlignment="center"
+            android:entries="@array/dimenzije"/>
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textPodlogaFudbal"
+            android:text="Podloga"
+            android:textSize="20sp"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/spinnerPodlogaFudbal"
+            android:layout_width="284dp"
+            android:layout_height="27dp"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:entries="@array/podlogaF"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textGolovi"
+            android:text="Golovi"
+            android:textSize="20sp"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/spinnerGolovi"
+            android:layout_width="306dp"
+            android:layout_height="27dp"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:entries="@array/golovi"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textMreza"
+            android:text="Mreza"
+            android:textSize="20sp"
+            android:visibility="gone"/>
+
+        <Spinner
+            android:id="@+id/spinnerMreza"
+            android:layout_width="306dp"
+            android:layout_height="27dp"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:entries="@array/mreza"/>
+    </LinearLayout>
+
+
+
+
+
     <EditText
         android:id="@+id/editTextKomentar"
         android:layout_width="match_parent"
-        android:layout_height="390dp"
+        android:layout_height="wrap_content"
         android:ems="10"
         android:gravity="start"
-        android:hint="Dodaj komentar o kvalitetetu podloge golova,koseva i opsti komentar o mestu"
+        android:hint="Opsti komentar o mestu"
         android:inputType="textMultiLine"
         android:textAlignment="textStart" />
 
     <EditText
         android:id="@+id/editTextOcena"
         android:layout_width="match_parent"
-        android:layout_height="71dp"
+        android:layout_height="61dp"
         android:ems="10"
         android:hint="Dodajte ocenu"
         android:inputType="number" />
@@ -85,5 +299,7 @@
             android:layout_weight="1"
             android:text="Otkazi" />
     </LinearLayout>
+
+
 
 </LinearLayout>

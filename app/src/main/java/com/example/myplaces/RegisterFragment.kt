@@ -1,7 +1,8 @@
 package com.example.myplaces
-
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -15,6 +16,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
@@ -26,6 +29,8 @@ import java.io.ByteArrayOutputStream
 
 
 class RegisterFragment : Fragment() {
+private val CAMERA_PERMISSION_REQUEST_CODE = 1001
+
 lateinit var pass:EditText
 lateinit var korisnickoIme:EditText
 lateinit var ime:EditText
@@ -66,11 +71,21 @@ private lateinit var imageView: ImageView
 
 
         openCameraButton.setOnClickListener{
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            if (takePictureIntent.resolveActivity(requireActivity().packageManager) != null) {
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+            if (checkCameraPermission()) {
+                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (takePictureIntent.resolveActivity(requireActivity().packageManager) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                }
+            } else {
+                // Ako dozvola nije odobrena, zahtevajte je
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.CAMERA),
+                    CAMERA_PERMISSION_REQUEST_CODE
+                )
             }
         }
+
         dugme.setOnClickListener{
             progress.visibility=View.VISIBLE
             val korisnicko = korisnickoIme.text.toString()
@@ -124,6 +139,13 @@ private lateinit var imageView: ImageView
         return view
 
     }
+    private fun checkCameraPermission() : Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
