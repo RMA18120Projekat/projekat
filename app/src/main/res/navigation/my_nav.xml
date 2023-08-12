@@ -156,4 +156,9 @@
             app:popUpTo="@id/detaljniFragment2"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="com.example.myplaces.InfoFragment"
+        android:label="fragment_info"
+        tools:layout="@layout/fragment_info" />
 </navigation>

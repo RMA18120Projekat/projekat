@@ -1,7 +1,14 @@
 package com.example.myplaces
 
+import android.Manifest
+import android.app.Activity
 import android.content.ContentValues
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,23 +17,38 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import java.io.ByteArrayOutputStream
 
 
 class DetaljniFragment : Fragment() {
 
     private  val sharedViewModel:Korisnicko by activityViewModels()
     private val locationViewModel:LocationViewModel by activityViewModels()
+
 /////////////////////////////////////////////////////////////////////////////////
     private lateinit var database:DatabaseReference
+    private lateinit var storageRef: StorageReference
+    private  var imgUrl:String=""
+    private val REQUEST_IMAGE_CAPTURE = 1
+    val GALLERY_PERMISSION_REQUEST_CODE = 1002
+    val CAMERA_PERMISSION_REQUEST_CODE = 1001
+/////////////////////////////////////////////////////////////////////////////
+    private lateinit var slika:ImageView
     private lateinit var naziv:TextView
     private lateinit var opis:EditText
     private lateinit var ocena:EditText
@@ -82,6 +104,10 @@ class DetaljniFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view=inflater.inflate(R.layout.fragment_detaljni,container,false)
+        storageRef = FirebaseStorage.getInstance().reference
+        slika=view.findViewById(R.id.slikaObjektaU)
+
+        //////////////////////////////////////////
         teren=view.findViewById(R.id.spinnerTerenU)
         sirinaObruca=view.findViewById(R.id.spinnerSirinaU)
         sirinaText=view.findViewById(R.id.textSirinaU)
@@ -110,6 +136,7 @@ class DetaljniFragment : Fragment() {
         azuriraj=view.findViewById(R.id.buttonDodajMestoU)
         latituda=view.findViewById(R.id.Latituda)
         longituda=view.findViewById(R.id.Longituda)
+        //NA OTVARANJE STRANICE PREUZIMA SE IZ BAZE NEOPHODNO
         try {
             ucitaj.visibility=View.VISIBLE
             database = FirebaseDatabase.getInstance().getReference("Places")
@@ -122,7 +149,8 @@ class DetaljniFragment : Fragment() {
                     longituda.text=snapshot.child("longituda").value.toString()
                     sharedViewModel.latituda=latituda.text.toString()
                     sharedViewModel.longituda=longituda.text.toString()
-
+                    imgUrl = snapshot.child("img").value.toString()
+                    preuzmiSLiku()
                     //////////////////////////////////////////////////
                     val terenNiz=resources.getStringArray(R.array.teren)
                     val terenIndex = terenNiz.indexOf(snapshot.child("teren").value.toString())
@@ -478,10 +506,10 @@ class DetaljniFragment : Fragment() {
                     .replace("[", "").replace("]", "")
 
                 val mesto = if(terenIzabran=="Fudbalski") {
-                    Places(naziv.text.toString(),opis.text.toString(),ocena.text.toString().toIntOrNull(),sharedViewModel.ime,longituda.text.toString(), latituda.text.toString(),terenIzabran,"","","","","",posecenostIzabrana,dimenzijeIzabrana,mrezaIzabrana,goloviIzabrana,podlogaFIzabrana)
+                    Places(naziv.text.toString(),opis.text.toString(),ocena.text.toString().toIntOrNull(),sharedViewModel.ime,longituda.text.toString(), latituda.text.toString(),terenIzabran,"","","","","",posecenostIzabrana,dimenzijeIzabrana,mrezaIzabrana,goloviIzabrana,podlogaFIzabrana,imgUrl)
 
                 } else {
-                    Places(naziv.text.toString(),opis.text.toString(),ocena.text.toString().toIntOrNull(),sharedViewModel.ime,longituda.text.toString(), latituda.text.toString(),terenIzabran,sirinaIzabrana,osobinaIzabrana,podlogaKIzabrana,koseviIzabrana,mrezicaIzabrana,posecenostIzabrana,dimenzijeIzabrana,"","","")
+                    Places(naziv.text.toString(),opis.text.toString(),ocena.text.toString().toIntOrNull(),sharedViewModel.ime,longituda.text.toString(), latituda.text.toString(),terenIzabran,sirinaIzabrana,osobinaIzabrana,podlogaKIzabrana,koseviIzabrana,mrezicaIzabrana,posecenostIzabrana,dimenzijeIzabrana,"","","",imgUrl)
                 }
                 database.child(key).setValue(mesto).addOnSuccessListener {
 
@@ -526,11 +554,137 @@ class DetaljniFragment : Fragment() {
             findNavController().navigate(R.id.action_detaljniFragment2_to_mapFragment)
 
         }
+        ///////////////////////////////////////////////////////////////////////////////
+        var openCameraButton:Button=view.findViewById(R.id.buttonDodajKameromU)
+        openCameraButton.setOnClickListener{
+            if (checkCameraPermission()) {
+                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (takePictureIntent.resolveActivity(requireActivity().packageManager) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                }
+            } else {
+                // Ako dozvola nije odobrena, zahtevajte je
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.CAMERA),
+                    CAMERA_PERMISSION_REQUEST_CODE
+                )
+            }
+        }
+        var openGalleryButton:Button=view.findViewById(R.id.buttonDodajGalerijomU)
+
+        openGalleryButton.setOnClickListener{
+            if (checkGalleryPermission()) {
+                val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                startActivityForResult(galleryIntent, GALLERY_PERMISSION_REQUEST_CODE)
+            } else {
+                // Ako dozvola nije odobrena, zahtevajte je
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    GALLERY_PERMISSION_REQUEST_CODE
+                )
+            }
+        }
+
 
 
 
         return view
     }
+
+    //FUNKCIJE ZA DOZVOLE
+    private fun checkCameraPermission() : Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+    private fun checkGalleryPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+    //FUNKCIJA KOJA ODREDJUJE STA CE DA SE RADI KADA SE VRATIMO U ACTIVIY APLIKACIJE
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            //ZA SETOVANJE IMAGE VIEW-A
+            slika.setImageBitmap(imageBitmap)
+            posaljiSlikuUFireStoragePreuzmiURLiPosaljiURealtimeDatabase(imageBitmap)
+        }
+        if (requestCode == GALLERY_PERMISSION_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            // Ovde obrada rezultata odabira slike iz galerije
+            val selectedImageUri: Uri? = data.data
+            if (selectedImageUri != null) {
+                // Očitavanje slike iz URI i postavljanje u ImageView
+                val imageBitmap = MediaStore.Images.Media.getBitmap(
+                    requireContext().contentResolver,
+                    selectedImageUri
+                )
+                slika.setImageBitmap(imageBitmap)
+
+                // Otpremanje slike na Firebase Storage
+                posaljiSlikuUFireStoragePreuzmiURLiPosaljiURealtimeDatabase(imageBitmap)
+
+            }
+        }
+    }
+//FUNKCIJA ZA UPIS U BAZU PA PREUZIMANJE URL SLIKE SA STORIGA I CUVANJE U LOKALNU PROMENLJIVU KOJA CE SLUZITI ZA UZIMANJE PODATKA
+//O ATRIBUTU Places.Img:String
+private fun preuzmiSLiku() {
+
+
+    if (imgUrl != "") {
+        Glide.with(requireContext())
+            .load(imgUrl)
+            .into(slika)
+    }
+}
+    private fun posaljiSlikuUFireStoragePreuzmiURLiPosaljiURealtimeDatabase(imageBitmap:Bitmap)
+{
+    val imagesRef = storageRef.child("images/${System.currentTimeMillis()}.jpg")
+
+    // Convert the bitmap to bytes
+    val baos = ByteArrayOutputStream()
+    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+    val imageData = baos.toByteArray()
+
+    // Upload the image to Firebase Storage
+    val uploadTask = imagesRef.putBytes(imageData)
+    uploadTask.addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            // Image upload success
+            // Now you can get the download URL of the image and save it to the database
+            imagesRef.downloadUrl.addOnSuccessListener { uri ->
+                // Save the URI to the database or use it as needed
+                imgUrl = uri.toString()
+                preuzmiSLiku()
+                // Add the code to save the URL to the user's data in Firebase Database here
+            }.addOnFailureListener { exception ->
+                // Handle any errors that may occur while retrieving the download URL
+                Toast.makeText(
+                    requireContext(),
+                    "Failed to get download URL.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        } else {
+            // Image upload failed
+            val errorMessage = task.exception?.message
+            Toast.makeText(
+                requireContext(),
+                "Image upload failed. Error: $errorMessage",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+
+}
+
+
 
 
 }

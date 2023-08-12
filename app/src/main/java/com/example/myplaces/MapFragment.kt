@@ -110,14 +110,14 @@ class MapFragment : Fragment() {
                        sin(dLon / 2) * sin(dLon / 2)
                val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
                val distance = R * c
-               if ( distance<= 5) {
+               if ( distance<= 1) {
                    val lon = clickedPoint.longitude.toString()
                    val lati = clickedPoint.latitude.toString()
                    locationViewModel.setLocation(lon, lati)
                    findNavController().popBackStack()
                    return true
                } else {
-                   Toast.makeText(context,"Ne mozete da izabere datu lokaciju jer je dalja od 5km (nije Vam u blizini)",Toast.LENGTH_SHORT).show()
+                   Toast.makeText(context,"Ne mozete da izabere datu lokaciju jer je dalja od 1km (nije Vam u blizini)",Toast.LENGTH_SHORT).show()
                    return false
                }
            }
@@ -149,7 +149,15 @@ class MapFragment : Fragment() {
                     marker.position = sPoint
                     marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM) // Postavljanje tačke spajanja markera
                     marker.title = mojeMesto.naziv
-                    marker.subDescription = "Mesto je dodao:"+mojeMesto.autor+"<br>"+"Teren je:"+mojeMesto.teren+"<br>"+"Ocena:"+mojeMesto.ocena
+                    marker.subDescription = "Mesto je dodao:"+mojeMesto.autor+"<br>"+"Teren je:"+mojeMesto.teren+"<br>"+"Ocena:"+mojeMesto.ocena+"<br>"+"Dimenzije:"+mojeMesto.dimenzije+"<br>"+"Posecenost:"+mojeMesto.posecenost+"<br>"
+                    if(mojeMesto.teren=="Kosarkaski")
+                    {
+                        marker.subDescription+="Sirinca obruca:"+mojeMesto.sirinaObruca+"<br>"+"Osobina obruca:"+mojeMesto.osobinaObruca+"<br>"+"Podloga:"+mojeMesto.podlogaKosarka+"<br>"+"Mrezica:"+mojeMesto.mrezica+"<br>"+"Visina kosa:"+mojeMesto.visinaKosa
+                    }
+                    else if(mojeMesto.teren=="Fudbalski")
+                    {
+                        marker.subDescription+="Mreza"+mojeMesto.mreza+"<br>"+"Golovi:"+mojeMesto.golovi+"<br>"+"Podloga:"+mojeMesto.podlogaFudbal
+                    }
 
                     // Dodavanje markera na mapu
                     map.overlays.add(marker)
@@ -218,6 +226,7 @@ class MapFragment : Fragment() {
                 val myLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(requireContext()), map)
                 myLocationOverlay.enableMyLocation()
                 map.overlays.add(myLocationOverlay)
+                setOnMapClickOverlay()
 
 
 

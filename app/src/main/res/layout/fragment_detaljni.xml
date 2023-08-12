@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:textAlignment="center"
     tools:context=".DodajMestoFragment">
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
     <TextView
         android:id="@+id/editTextNazivMestaU"
@@ -17,6 +20,13 @@
         android:inputType="text"
         android:textAlignment="center"
         android:textSize="30sp" />
+
+    <ImageView
+        android:id="@+id/slikaObjektaU"
+        android:layout_width="match_parent"
+        android:layout_height="99dp"
+        tools:src="@drawable/bonuspack_bubble" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -284,30 +294,51 @@
         android:layout_height="wrap_content"
         android:id="@+id/mapa"
         android:text="Pokazi na mapi"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="69dp">
+
+            <Button
+                android:id="@+id/buttonDodajKameromU"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="35dp"
+                android:text="Otvori kameru" />
+
+            <Button
+                android:id="@+id/buttonDodajGalerijomU"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Otvori galeriju" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="86dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonDodajMestoU"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:text="Azuriraj mesto" />
+
+            <Button
+                android:id="@+id/buttonObrisiU"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_weight="1"
+                android:text="Obrisi mesto" />
+        </LinearLayout>
 
         <Button
-            android:id="@+id/buttonDodajMestoU"
-            android:layout_width="155dp"
-            android:layout_height="match_parent"
-            android:layout_marginRight="16dp"
-            android:text="Azuriraj mesto" />
+            android:id="@+id/buttonNazadU"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Otkazi" />
 
-        <Button
-            android:id="@+id/buttonObrisiU"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_weight="1"
-            android:text="Obrisi mesto" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/buttonNazadU"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Otkazi" />
-</LinearLayout>
+</ScrollView>

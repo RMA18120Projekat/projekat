@@ -260,14 +260,14 @@
 
         <EditText
             android:id="@+id/editLongituda"
-            android:layout_width="wrap_content"
+            android:layout_width="105dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
             android:hint="Longituda" />
 
         <EditText
             android:id="@+id/editLatituda"
-            android:layout_width="wrap_content"
+            android:layout_width="118dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_weight="1"
@@ -281,6 +281,37 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="154dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/slikaObjekta"
+            android:layout_width="match_parent"
+            android:layout_height="84dp"
+            tools:src="@drawable/bonuspack_bubble" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/buttonDodajKamerom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="35dp"
+                android:text="Otvori kameru" />
+
+            <Button
+                android:id="@+id/buttonDodajGalerijom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Otvori galeriju" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -288,12 +319,12 @@
             android:id="@+id/buttonDodajMesto"
             android:layout_width="155dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
+            android:layout_marginRight="20dp"
             android:text="Dodaj mesto" />
 
         <Button
             android:id="@+id/buttonOtkaziDodavanje"
-            android:layout_width="wrap_content"
+            android:layout_width="168dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_weight="1"

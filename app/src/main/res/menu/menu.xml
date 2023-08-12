@@ -4,9 +4,9 @@
 
     <item
         android:id="@+id/fragment_login"
-        android:title="odjavi se" />
+        android:title="Odjavi se" />
     <item
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="vidi informacije o sebi" />
+        android:title="Uvid u svoje informacije" />
 </menu>

@@ -109,7 +109,7 @@ private lateinit var imageView: ImageView
                            pass.text.clear()
                            brojTelefona.text.clear()
                            ime.text.clear()
-
+                            Toast.makeText(context,"Uspesna registracija, prijavite se na svoj nalog",Toast.LENGTH_LONG)
 
                        }.addOnFailureListener{
                            Toast.makeText(context,"Greska",Toast.LENGTH_SHORT)
