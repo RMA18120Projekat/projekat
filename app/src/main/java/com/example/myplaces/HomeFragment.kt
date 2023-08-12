@@ -36,7 +36,6 @@ class HomeFragment : Fragment() {
     lateinit var database:DatabaseReference
     val sharedViewModel:Korisnicko by activityViewModels()
     val locationViewModel:LocationViewModel by activityViewModels()
-
     val storage = FirebaseStorage.getInstance()
     lateinit var ucitaj:ProgressBar
     val storageRef = storage.reference
@@ -67,6 +66,7 @@ class HomeFragment : Fragment() {
             database.child(key).get().addOnSuccessListener { snapshot ->
                 if (snapshot.exists()) {
                     textIme.text = snapshot.child("ime").value.toString()
+                    sharedViewModel.user=User(snapshot.child("korisnicko").value.toString(),snapshot.child("sifra").value.toString(),snapshot.child("ime").value.toString(),snapshot.child("prezime").value.toString(),snapshot.child("brojTelefona").value.toString().toLongOrNull(),snapshot.child("img").value.toString())
                     prezimeBaza.text=snapshot.child("prezime").value.toString()
                     val imageName=snapshot.child("img").value.toString()
                     if(imageName!="")
@@ -111,9 +111,18 @@ class HomeFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        auth.signOut()
-        findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
+        if(item.itemId==R.id.fragment_login)
+        {
+            auth.signOut()
+            findNavController().navigate(R.id.action_homeFragment_to_loginFragment)
+
+        }
+        if(item.itemId==R.id.fragment_info)
+        {
+            findNavController().navigate(R.id.action_homeFragment_to_infoFragment)
+        }
         return NavigationUI.onNavDestinationSelected(item!!,requireView().findNavController())||super.onOptionsItemSelected(item)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

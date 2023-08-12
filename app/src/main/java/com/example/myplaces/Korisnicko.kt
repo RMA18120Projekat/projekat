@@ -8,4 +8,5 @@ class Korisnicko: ViewModel() {
     var izabranoMesto=""
     var longituda=""
     var latituda=""
+    var user:User=User()
 }

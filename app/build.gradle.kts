@@ -68,5 +68,6 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     implementation("org.osmdroid:osmdroid-android:6.1.13")
     implementation("androidx.preference:preference-ktx:1.1.1")
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
 
 }
