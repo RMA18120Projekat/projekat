@@ -1,59 +1,207 @@
 package com.example.myplaces
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import java.io.ByteArrayOutputStream
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [EditFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class EditFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    lateinit var pass: EditText
+    lateinit var passC:EditText
+    lateinit var korisnickoIme: EditText
+    lateinit var ime: EditText
+    lateinit var prezime: EditText
+    lateinit var brojTelefona: EditText
+    lateinit var progress: ProgressBar
+    lateinit var dugme: Button
+    lateinit var database: DatabaseReference
+    lateinit var auth: FirebaseAuth
+    lateinit var imgUrl:String
+    private val REQUEST_IMAGE_CAPTURE = 1
+    private lateinit var storageRef: StorageReference
+    lateinit var user:User
+    private  val sharedViewModel:Korisnicko by activityViewModels()
+    private val CAMERA_PERMISSION_REQUEST_CODE = 1001
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var openCameraButton: Button
+    private lateinit var imageView: ImageView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit, container, false)
+        val view=inflater.inflate(R.layout.fragment_edit, container, false)
+        //INICIJALIZACIJA
+        pass=view.findViewById(R.id.editTextNovaSifraU)
+        korisnickoIme=view.findViewById(R.id.editTextMejlU)
+        korisnickoIme.setText(sharedViewModel.user.korisnicko)
+        ime=view.findViewById(R.id.editTextImeU)
+        ime.setText(sharedViewModel.user.ime)
+        prezime=view.findViewById(R.id.editTextPrezimeU)
+        prezime.setText(sharedViewModel.user.prezime)
+        brojTelefona=view.findViewById(R.id.editTextBrojTelefonaU)
+        brojTelefona.setText(sharedViewModel.user.brojTelefona.toString())
+        progress=view.findViewById(R.id.progressBar1U)
+        dugme=view.findViewById(R.id.buttonRegU)
+        auth=FirebaseAuth.getInstance()
+        openCameraButton = view.findViewById(R.id.buttonPhotoU)
+        imageView = view.findViewById(R.id.imageView6U)
+        if(sharedViewModel.user.img!="")
+        {
+            Glide.with(requireContext())
+                .load(sharedViewModel.user.img)
+                .into(imageView)
+        }
+        storageRef = FirebaseStorage.getInstance().reference
+        passC=view.findViewById(R.id.editTextNovaSifraU)
+        // KLIK NA DUGME I UZ DOZVOLU POKRETANJE KAMERE
+        openCameraButton.setOnClickListener{
+            if (checkCameraPermission()) {
+                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                if (takePictureIntent.resolveActivity(requireActivity().packageManager) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+                }
+            } else {
+                // Ako dozvola nije odobrena, zahtevajte je
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(Manifest.permission.CAMERA),
+                    CAMERA_PERMISSION_REQUEST_CODE
+                )
+            }
+        }
+        //KLIK NA AZURIRAJ DUGME AZURIRA PODATKE U BAZI, UPISUJE IH U SHARED VIEW MODEL I SALJE KORISNIKA NA FRAGMENT LICNE INFORMACIJE
+        dugme.setOnClickListener {
+            progress.visibility = View.VISIBLE
+            val korisnicko = korisnickoIme.text.toString()
+            val sifra = pass.text.toString()
+            val name = ime.text.toString()
+            val surname = prezime.text.toString()
+            val numberPhone = brojTelefona.text.toString()
+
+           /* if (korisnicko.isNotEmpty() && sifra.isNotEmpty() && name.isNotEmpty() && surname.isNotEmpty()) {
+                auth.createUserWithEmailAndPassword(korisnicko, sifra).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        progress.visibility = View.GONE
+                        database = FirebaseDatabase.getInstance().getReference("Users")
+                        user = User(
+                            korisnicko,
+                            sifra,
+                            name,
+                            surname,
+                            numberPhone.toLongOrNull(),
+                            sharedViewModel.img
+                        )
+                        val key = korisnicko.replace(".", "").replace("#", "").replace("$", "")
+                            .replace("[", "").replace("]", "")
+                        database.child(key).setValue(user).addOnSuccessListener {
+                            sharedViewModel.ime = korisnicko
+                            korisnickoIme.text.clear()
+                            prezime.text.clear()
+                            pass.text.clear()
+                            brojTelefona.text.clear()
+                            ime.text.clear()
+                            Toast.makeText(
+                                context,
+                                "Uspesna registracija, prijavite se na svoj nalog",
+                                Toast.LENGTH_LONG
+                            )
+
+                        }.addOnFailureListener {
+                            Toast.makeText(context, "Greska", Toast.LENGTH_SHORT)
+                        }
+                        findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
+
+                    } else {
+                        progress.visibility = View.GONE
+                        Toast.makeText(
+                            requireContext(),
+                            it.exception.toString(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                    }
+                }
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Niste popunili svsa polja za registraciju.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }*/
+        }
+
+
+
+        return view
+    }
+    private fun checkCameraPermission() : Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment EditFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            EditFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            imageView.setImageBitmap(imageBitmap)
+            // Create a reference to the image file in Firebase Storage
+            val imagesRef = storageRef.child("images/${System.currentTimeMillis()}.jpg")
+
+            // Convert the bitmap to bytes
+            val baos = ByteArrayOutputStream()
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val imageData = baos.toByteArray()
+
+            // Upload the image to Firebase Storage
+            val uploadTask = imagesRef.putBytes(imageData)
+            uploadTask.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Image upload success
+                    // Now you can get the download URL of the image and save it to the database
+                    imagesRef.downloadUrl.addOnSuccessListener { uri ->
+                        // Save the URI to the database or use it as needed
+                        imgUrl = uri.toString()
+                        sharedViewModel.img=imgUrl
+                        // Add the code to save the URL to the user's data in Firebase Database here
+                    }.addOnFailureListener { exception ->
+                        // Handle any errors that may occur while retrieving the download URL
+                        Toast.makeText(requireContext(), "Failed to get download URL.", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // Image upload failed
+                    val errorMessage = task.exception?.message
+                    Toast.makeText(requireContext(), "Image upload failed. Error: $errorMessage", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
     }
+
+
 }

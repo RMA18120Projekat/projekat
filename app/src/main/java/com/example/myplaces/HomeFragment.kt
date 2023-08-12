@@ -121,6 +121,12 @@ class HomeFragment : Fragment() {
         {
             findNavController().navigate(R.id.action_homeFragment_to_infoFragment)
         }
+        if(item.itemId==R.id.fragment_edit)
+        {
+            findNavController().navigate(R.id.action_homeFragment_to_editFragment)
+
+        }
+
         return NavigationUI.onNavDestinationSelected(item!!,requireView().findNavController())||super.onOptionsItemSelected(item)
 
     }

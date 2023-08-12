@@ -14,15 +14,34 @@
         android:orientation="vertical"
         android:gravity="center">
 
-        <TextView
-            android:id="@+id/textView4"
+        <ImageView
+            android:id="@+id/imageViewR3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="168dp"
+            android:src="@drawable/elfaklogo" />
 
+
+        <TextView
+            android:id="@+id/textViewR10"
+            style="@style/Naslov"
+            android:layout_width="match_parent"
+            android:layout_height="79dp"
+            android:layout_gravity="center_horizontal"
+            android:text="My Places"
+            android:textAlignment="center"
+
+            android:textSize="48sp" />
+
+        <TextView
+            android:id="@+id/textViewR3"
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:layout_marginBottom="15dp"
             android:gravity="center"
-            android:text="Registracija"
-            android:textSize="48sp"
+            android:text="Registrujte se "
+            android:textSize="30sp"
             android:textStyle="bold" />
+
 
         <EditText
             android:id="@+id/editTextMejl"

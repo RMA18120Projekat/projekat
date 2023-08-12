@@ -28,8 +28,8 @@
 
 
     <ImageView
-        android:id="@+id/circularImageView"
-        android:layout_width="215dp"
+        android:id="@+id/slikaInfo"
+        android:layout_width="295dp"
         android:layout_height="127dp"
         tools:src="@drawable/next" />
 
@@ -51,7 +51,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:text="Ime"
                 android:textAlignment="center"
                 android:textSize="25sp"
@@ -75,9 +75,10 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:text="Prezime"
 
+                android:textAlignment="center"
                 android:textSize="25sp"
                 android:textStyle="normal" />
 
@@ -99,9 +100,10 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:text="Broj telefona"
 
+                android:textAlignment="center"
                 android:textSize="25sp"
                 android:textStyle="normal" />
 
@@ -110,6 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
+                android:textAlignment="center"
                 android:textSize="25sp"
                 android:textStyle="bold"
                 tools:text="0631158575" />

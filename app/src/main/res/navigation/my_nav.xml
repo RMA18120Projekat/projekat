@@ -89,6 +89,9 @@
             app:destination="@id/izborFragment"
             app:popUpTo="@id/izborFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_homeFragment_to_editFragment"
+            app:destination="@id/editFragment" />
     </fragment>
     <fragment
         android:id="@+id/mojaMestaFragment"

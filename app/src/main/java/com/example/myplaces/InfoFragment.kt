@@ -10,9 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.bumptech.glide.Glide
 
 class InfoFragment : Fragment() {
     lateinit var ime:TextView
@@ -21,26 +23,38 @@ class InfoFragment : Fragment() {
     lateinit var brojTelefona:TextView
     lateinit var email:TextView
     lateinit var bodovi:TextView
+    private val user:Korisnicko by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view=inflater.inflate(R.layout.fragment_info,container,false)
-        setHasOptionsMenu(true)
+        //INICIJALIZACIJA PROMENLJIVIH
+        slika=view.findViewById(R.id.slikaInfo)
+        ime=view.findViewById(R.id.infoIme)
+        prezime=view.findViewById(R.id.infoPrezime)
+        brojTelefona=view.findViewById(R.id.infoTelefon)
+        email=view.findViewById(R.id.infoKorisnicko)
+        bodovi=view.findViewById(R.id.infoBodovi)
+        if(user.user.img!="")
+        {
+            Glide.with(requireContext())
+                .load(user.user.img)
+                .into(slika)
+        }
+        ime.text=user.user.ime
+        prezime.text=user.user.prezime
+        brojTelefona.text=user.user.brojTelefona.toString()
+        email.text=user.user.korisnicko
+        bodovi.text=100.toString()
+
 
         return view
     }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        findNavController().navigate(R.id.action_infoFragment_to_editFragment)
-        return NavigationUI.onNavDestinationSelected(item!!,requireView().findNavController())||super.onOptionsItemSelected(item)
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.edit,menu)
-    }
+
 
 
 }
