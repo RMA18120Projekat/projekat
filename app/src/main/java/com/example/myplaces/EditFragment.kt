@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream
 class EditFragment : Fragment() {
     lateinit var pass: EditText
     lateinit var passC:EditText
+    lateinit var passN:EditText
     lateinit var korisnickoIme: EditText
     lateinit var ime: EditText
     lateinit var prezime: EditText
@@ -57,7 +58,9 @@ class EditFragment : Fragment() {
     ): View? {
         val view=inflater.inflate(R.layout.fragment_edit, container, false)
         //INICIJALIZACIJA
-        pass=view.findViewById(R.id.editTextNovaSifraU)
+        pass=view.findViewById(R.id.editTextStaraSifraU)
+        passN=view.findViewById(R.id.editTextNovaSifraU)
+        passC=view.findViewById(R.id.editTextNovaSifraU2)
         korisnickoIme=view.findViewById(R.id.editTextMejlU)
         korisnickoIme.setText(sharedViewModel.user.korisnicko)
         ime=view.findViewById(R.id.editTextImeU)
@@ -78,7 +81,6 @@ class EditFragment : Fragment() {
                 .into(imageView)
         }
         storageRef = FirebaseStorage.getInstance().reference
-        passC=view.findViewById(R.id.editTextNovaSifraU)
         // KLIK NA DUGME I UZ DOZVOLU POKRETANJE KAMERE
         openCameraButton.setOnClickListener{
             if (checkCameraPermission()) {
@@ -95,65 +97,66 @@ class EditFragment : Fragment() {
                 )
             }
         }
+        database = FirebaseDatabase.getInstance().getReference("Users")
         //KLIK NA AZURIRAJ DUGME AZURIRA PODATKE U BAZI, UPISUJE IH U SHARED VIEW MODEL I SALJE KORISNIKA NA FRAGMENT LICNE INFORMACIJE
         dugme.setOnClickListener {
             progress.visibility = View.VISIBLE
             val korisnicko = korisnickoIme.text.toString()
             val sifra = pass.text.toString()
+            val newSifra=passN.text.toString()
+            val newSifraC=passC.text.toString()
             val name = ime.text.toString()
             val surname = prezime.text.toString()
             val numberPhone = brojTelefona.text.toString()
+            if(korisnicko==sharedViewModel.user.korisnicko&&newSifra.isEmpty()&&sifra==sharedViewModel.user.sifra)
+            {
+                user=User(korisnicko,pass.text.toString(),ime.text.toString(),prezime.text.toString(),brojTelefona.text.toString().toLongOrNull(),imgUrl)
+                val key = korisnicko.replace(".", "").replace("#", "").replace("$", "").replace("[", "").replace("]", "")
+                val userUpdates = mapOf(
+                    key to mapOf(
+                        "korisnicko" to user.korisnicko,
+                        "pass" to user.sifra,
+                        "ime" to user.ime,
+                        "prezime" to user.prezime,
+                        "brojTelefona" to user.brojTelefona,
+                        "img" to user.img
+                    )
+                )
+                database.updateChildren(userUpdates).addOnSuccessListener {
+                    progress.visibility=View.GONE
+                    sharedViewModel.ime=korisnicko
+                    korisnickoIme.text.clear()
+                    prezime.text.clear()
+                    pass.text.clear()
+                    brojTelefona.text.clear()
+                    ime.text.clear()
+                    Toast.makeText(context,"Uspesno azuriranje",Toast.LENGTH_LONG)
+                    findNavController().navigate(R.id.action_editFragment_to_infoFragment)
 
-           /* if (korisnicko.isNotEmpty() && sifra.isNotEmpty() && name.isNotEmpty() && surname.isNotEmpty()) {
-                auth.createUserWithEmailAndPassword(korisnicko, sifra).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        progress.visibility = View.GONE
-                        database = FirebaseDatabase.getInstance().getReference("Users")
-                        user = User(
-                            korisnicko,
-                            sifra,
-                            name,
-                            surname,
-                            numberPhone.toLongOrNull(),
-                            sharedViewModel.img
-                        )
-                        val key = korisnicko.replace(".", "").replace("#", "").replace("$", "")
-                            .replace("[", "").replace("]", "")
-                        database.child(key).setValue(user).addOnSuccessListener {
-                            sharedViewModel.ime = korisnicko
-                            korisnickoIme.text.clear()
-                            prezime.text.clear()
-                            pass.text.clear()
-                            brojTelefona.text.clear()
-                            ime.text.clear()
-                            Toast.makeText(
-                                context,
-                                "Uspesna registracija, prijavite se na svoj nalog",
-                                Toast.LENGTH_LONG
-                            )
+                }.addOnFailureListener{
+                    progress.visibility=View.GONE
 
-                        }.addOnFailureListener {
-                            Toast.makeText(context, "Greska", Toast.LENGTH_SHORT)
-                        }
-                        findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
-
-                    } else {
-                        progress.visibility = View.GONE
-                        Toast.makeText(
-                            requireContext(),
-                            it.exception.toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                    }
+                    Toast.makeText(context,"Greska",Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Niste popunili svsa polja za registraciju.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }*/
+            }
+            else
+            {
+                if(pass.text.toString().isEmpty()||pass.text.toString()!=user.sifra.toString())
+                {
+                    progress.visibility=View.GONE
+
+                    Toast.makeText(context,"Nalog ne moze biti azuriran sa netacnom trenutnom sifrom",Toast.LENGTH_SHORT).show()
+                }
+                else if(newSifra!=newSifraC)
+                {
+                    progress.visibility=View.GONE
+
+                    Toast.makeText(context,"Uneta nova sifra nije potvrdjena",Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
+
         }
 
 

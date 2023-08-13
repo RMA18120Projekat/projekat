@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EditFragment"
-        android:orientation="vertical"
-        android:gravity="center">
+    tools:context=".EditFragment">
+  <LinearLayout
+      android:orientation="vertical"
+        android:gravity="center"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/imageViewU3"
@@ -78,16 +81,26 @@
             android:inputType="phone"
             android:textSize="25sp" />
 
-        <EditText
-            android:id="@+id/editTextNovaSifraU"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+      <EditText
+          android:id="@+id/editTextStaraSifraU"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
 
-            android:ems="10"
-            android:gravity="center"
-            android:hint="Ovde unesite Sifru"
-            android:inputType="textPassword"
-            android:textSize="25sp" />
+          android:ems="10"
+          android:gravity="center"
+          android:hint="Ovde unesite treuntu sifru"
+          android:inputType="textPassword"
+          android:textSize="25sp" />
+      <EditText
+          android:id="@+id/editTextNovaSifraU"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+
+          android:ems="10"
+          android:gravity="center"
+          android:hint="Ovde unesite novu sifru"
+          android:inputType="textPassword"
+          android:textSize="25sp" />
 
         <EditText
             android:id="@+id/editTextNovaSifraU2"
@@ -96,7 +109,7 @@
 
             android:ems="10"
             android:gravity="center"
-            android:hint="Potvrdite sifru"
+            android:hint="Ovde potvrdite novu sifru"
             android:inputType="textPassword"
             android:textSize="25sp" />
 
@@ -138,6 +151,7 @@
 
 
 
-</LinearLayout>
+        </LinearLayout>
+  </LinearLayout>
 
-</LinearLayout>
+</ScrollView>
